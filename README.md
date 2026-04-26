@@ -1,20 +1,22 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+<img width="1200" height="475" alt="GHBanner" src="https://ibb.co/jZwvKBDX" />
 </div>
 
-# Run and deploy your AI Studio app
+# QuizMaster for all your quiz hosts and quizzers!
 
-This contains everything you need to run your app locally.
+This app contains everything that a simple quiz needs!!
 
-View your app in AI Studio: https://ai.studio/apps/468e91b6-289e-4d2c-bf47-c85c1e6bb82e
+View this app in : https://bit.ly/quizmasterteam
 
-## Run Locally
+## 🚀 Key Features
+⚡ Real-Time Competition: Battle it out with your classmates in live games powered by instant socket updates.
+🛠️ Pro Admin Panel: Create, manage, and orchestrate quiz sets with a powerful, intuitive interface.
+📊 Live Leaderboards: Watch the standings shift in real-time as participants climb to the top.
+🎮 Interactive UI: Enjoy a polished experience with sleek "spring-physics" animations and fluid transitions.
+📂 Easy Content Import: Instantly upload entire question sets via CSV or customize them manually.
+⏱️ Precision Controls: Choose your vibe with Manual Pacing for deep dives or Auto-Pilot for fast-paced action.
+📱 Universal Access: Join from any device—whether it’s a desktop, tablet, or smartphone.
+🏆 Victory Celebrations: Unique end-game screens that celebrate winners with style.
+Ready to start? Just create a session as a Host or enter a 6-digit PIN to Join the fun!
 
-**Prerequisites:**  Node.js
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
