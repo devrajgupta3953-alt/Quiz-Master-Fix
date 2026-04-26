@@ -1,0 +1,6 @@
+{
+  "name": "Quiz Master",
+  "description": "A professional-grade real-time quiz platform featuring bulk CSV imports, rich media support, host-led or auto-pilot pacing, and advanced post-game difficulty analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

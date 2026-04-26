@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand: #4255ff;
+  --color-brand-hover: #3b4ad9;
+  --color-success: #23b26d;
+  --color-error: #ff725e;
+  
+  --color-bg-base: #f6f7fb;
+  --color-bg-white: #ffffff;
+  --color-bg-sidebar: #ffffff;
+  
+  --color-border-subtle: #edeff4;
+  --color-text-primary: #303545;
+  --color-text-secondary: #586380;
+  --color-text-muted: #939bb4;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-quizlet: 0 0.25rem 1rem 0 rgba(48, 53, 69, 0.08);
+}
+
+@layer base {
+  body {
+    @apply bg-bg-base text-text-primary;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.quizlet-card {
+  @apply bg-bg-white border-2 border-border-subtle rounded-xl shadow-quizlet transition-all duration-200 hover:border-brand/30;
+}
+
+.quizlet-input {
+  @apply w-full bg-bg-white border-2 border-border-subtle p-3 rounded-lg text-sm focus:outline-none focus:border-brand transition-all font-medium placeholder:text-text-muted;
+}
+
+.quizlet-btn-primary {
+  @apply px-6 py-3 bg-brand text-white rounded-lg font-bold text-sm transition-all hover:bg-brand-hover active:scale-95 shadow-lg shadow-brand/10;
+}
+
+.quizlet-btn-outline {
+  @apply px-6 py-3 border-2 border-brand text-brand rounded-lg font-bold text-sm transition-all hover:bg-brand/5 active:scale-95;
+}
+
+.elegant-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.elegant-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.elegant-scrollbar::-webkit-scrollbar-thumb {
+  background: #d9dde8;
+  border-radius: 10px;
+}
+.elegant-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #c1c7d6;
+}
