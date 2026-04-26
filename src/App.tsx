@@ -29,7 +29,8 @@ import {
   Save,
   Copy,
   AlertTriangle,
-  X
+  X,
+  Home
 } from 'lucide-react';
 import Papa from 'papaparse';
 
@@ -65,7 +66,23 @@ interface QuizState {
   questionStats?: QuestionStats[];
 }
 
-const socket: Socket = io();
+const socket: Socket = io(window.location.origin, {
+  transports: ['polling', 'websocket'],
+  reconnection: true,
+  reconnectionAttempts: 10
+});
+
+function HomeButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button 
+      onClick={onClick}
+      className="p-2 hover:bg-white/10 rounded-lg transition-colors group flex items-center gap-2 text-white/80 hover:text-white"
+    >
+      <Home className="w-5 h-5 transition-transform group-hover:scale-110" />
+      <span className="text-xs font-semibold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">Home</span>
+    </button>
+  );
+}
 
 function InteractiveIcon({ children, className }: { children: React.ReactNode, className?: string }) {
   const mouseX = useMotionValue(0);
@@ -108,6 +125,15 @@ export default function App() {
   const [hasJoined, setHasJoined] = useState(false);
 
   useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Socket connected:', socket.id);
+      // Auto-reconnect if admin key exists
+      const savedKey = localStorage.getItem('quizAdminKey');
+      if (savedKey) {
+        socket.emit('admin:reconnect', savedKey);
+      }
+    });
+
     socket.on('quiz_state', (state: QuizState) => {
       setGameState(state);
     });
@@ -124,17 +150,13 @@ export default function App() {
     socket.on('kicked', () => {
       setHasJoined(false);
       setPlayerName('');
-      setView('auth');
-      alert('You have been removed from the session by the host.');
+      setView('landing');
+      setRole(null);
+      alert('The session has ended or you have been removed.');
     });
 
-    // Admin recovery
-    const savedKey = localStorage.getItem('quizAdminKey');
-    if (savedKey) {
-      socket.emit('admin:reconnect', savedKey);
-    }
-
     return () => {
+      socket.off('connect');
       socket.off('quiz_state');
       socket.off('admin:key');
       socket.off('join_success');
@@ -250,7 +272,7 @@ export default function App() {
             </div>
             <div className="hidden md:flex justify-end">
               <button onClick={() => handleStartSession('participant')} className="quizlet-btn-outline group flex items-center gap-2">
-                Join Game <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Join a Quiz <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </div>
@@ -380,19 +402,30 @@ export default function App() {
     <div className="min-h-screen bg-bg-base text-text-primary font-sans flex flex-col">
       <header className="h-16 border-b border-border-subtle bg-bg-white px-6 sticky top-0 backdrop-blur-md z-40 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-4">
-          <span onClick={() => setView('landing')} className="text-xl font-black tracking-tight text-brand cursor-pointer">Quiz Master</span>
+          <HomeButton onClick={() => { setRole(null); setView('landing'); }} />
+          <span onClick={() => { setRole(null); setView('landing'); }} className="text-xl font-black tracking-tight text-brand cursor-pointer">Quiz Master</span>
           <div className="h-4 w-px bg-border-subtle" />
           <span className="text-[10px] px-2 py-0.5 bg-brand/10 border border-brand/20 text-brand rounded font-bold uppercase tracking-widest">{role}</span>
           {gameState?.status !== "LOBBY" && gameState?.status !== "FINISHED" && (
-            <div className="flex items-center gap-2 px-3 py-1 bg-success/10 text-success rounded-full text-[10px] font-bold uppercase tracking-wider">
-              <div className="w-1.5 h-1.5 bg-success rounded-full" />
+            <div className="flex items-center gap-2 px-3 py-1 bg-success/10 text-success rounded-full text-[10px] font-bold uppercase tracking-wider transition-all animate-in fade-in slide-in-from-left-4">
+              <div className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
               LIVE: {Object.keys(gameState.participants).length} Participants
             </div>
           )}
         </div>
         <button 
-          onClick={() => { setRole(null); setView('landing'); }}
-          className="text-[11px] text-text-muted hover:text-text-primary uppercase tracking-widest font-bold transition-colors flex items-center gap-2"
+          onClick={() => { 
+            if (role === 'admin') {
+              if (confirm('Are you sure you want to exit? The session will continue but you will be logged out as admin.')) {
+                setRole(null); 
+                setView('landing'); 
+              }
+            } else {
+              setRole(null); 
+              setView('landing'); 
+            }
+          }}
+          className="quizlet-btn-outline px-4 py-2 border-border-subtle text-text-muted hover:text-text-primary uppercase tracking-widest font-extrabold transition-all text-[10px]"
         >
           Exit Session
         </button>
@@ -608,10 +641,14 @@ function AdminPanel({
   };
 
   const resetQuiz = () => {
-    socket.emit('admin:reset');
-    setQuestions([]);
-    setView('landing');
-    setRole(null);
+    if (confirm('Are you sure you want to end the session for everyone?')) {
+      socket.emit('admin:reset');
+      setQuestions([]);
+      localStorage.removeItem('quizAdminKey');
+      setView('landing');
+      setRole(null);
+      setHasJoined(false);
+    }
   };
 
   if (!gameState) return <div className="text-center py-12 text-text-muted">Connecting to server...</div>;
@@ -1423,7 +1460,7 @@ function ParticipantPanel({
             onClick={joinQuiz}
             className="w-full quizlet-btn-primary py-5 text-base"
           >
-            Join Game <ArrowRight className="w-5 h-5 ml-2 inline" />
+            Join Quiz <ArrowRight className="w-5 h-5 ml-2 inline" />
           </button>
         </div>
       </div>

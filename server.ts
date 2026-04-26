@@ -144,7 +144,9 @@ async function startServer() {
     socket.on("admin:start_next_question", startNextQuestion);
 
     socket.on("admin:reset", () => {
+      console.log(`Admin requested RESET. Previous room: ${quizState.roomCode}`);
       resetState();
+      console.log(`New room created: ${quizState.roomCode}`);
       if (timerInterval) clearInterval(timerInterval);
       if (autoPilotTimeout) clearTimeout(autoPilotTimeout);
       broadcastState();
