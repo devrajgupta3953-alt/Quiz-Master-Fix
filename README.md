@@ -2,7 +2,7 @@
 <img width="1200" height="475" alt="GHBanner" src="https://i.ibb.co/5xjWDtLH/Screenshot-2026-04-26-105954.png" />
 </div>
 
-# QuizMaster for all your quiz hosts and quizzers!
+# QuizMaster for all the quiz hosts and quizzers!
 
 This app contains everything that a simple quiz needs!!
 
